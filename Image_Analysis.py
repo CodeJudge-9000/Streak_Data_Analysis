@@ -68,3 +68,29 @@ def loadDataAsGrey(fileName,allFrames,firstFrame,lastFrame):
 print(loadDataAsGrey("0DC_-_AC_50_Hz_0.7V_WE3_CERE24.avi",0,1,20).shape)
 
 
+
+def removeaverage(array):
+    # Removes the average background of the image
+    
+    # Takes the average of the values in all the layers
+    average = np.sum(array,axis = 0)/(array.shape[0])
+    
+    result = []
+    
+    # Removes the average of all the layers and stacks the new layers on top of each other
+    for i in range(array.shape[0]):
+        new = array[i,:,:]-average
+        result.append(new)
+    result = np.array(np.stack(result))
+    return result
+
+# Gaussian blurs the image
+def gaussianfilter(array, sigma):
+    
+    blurred = scipy.ndimage.gaussian_filter(array, sigma)
+    
+    return blurred
+
+
+
+
