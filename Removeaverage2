@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  6 14:09:48 2020
+
+@author: Johanna
+"""
+
+
+import numpy as np
+
+d3_array = np.array([[[0, 1],[2, 3]],[[4, 5],[6, 7]]])
+
+def removeaverage(array):
+
+    average = np.sum(array,axis = 0)/(array.shape[0])
+    
+    result = []
+    
+    for i in range(array.shape[0]):
+        new = array[i,:,:]-average
+        result.append(new)
+    result = np.stack(result)
+    return result
+
+print(removeaverage(d3_array))
