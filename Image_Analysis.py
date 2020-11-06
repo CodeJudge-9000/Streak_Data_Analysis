@@ -65,9 +65,6 @@ def loadDataAsGrey(fileName,allFrames,firstFrame,lastFrame):
     #print("Final shape: ",greyarray.shape)
     return greyarray
 
-print(loadDataAsGrey("0DC_-_AC_50_Hz_0.7V_WE3_CERE24.avi",0,1,20).shape)
-
-
 
 def removeaverage(array):
     # Removes the average background of the image
@@ -93,4 +90,5 @@ def gaussianfilter(array, sigma):
 
 
 
+print(loadDataAsGrey("0DC_-_AC_50_Hz_0.7V_WE3_CERE24.avi",0,1,20).shape)
 
