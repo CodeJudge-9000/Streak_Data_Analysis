@@ -9,8 +9,6 @@ Created on Fri Nov  6 14:09:48 2020
 
 import numpy as np
 
-d3_array = np.array([[[0, 1],[2, 3]],[[4, 5],[6, 7]]])
-
 def removeaverage(array):
 
     average = np.sum(array,axis = 0)/(array.shape[0])
@@ -23,4 +21,3 @@ def removeaverage(array):
     result = np.stack(result)
     return result
 
-print(removeaverage(d3_array))
