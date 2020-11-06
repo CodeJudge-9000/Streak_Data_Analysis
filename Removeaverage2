@@ -8,22 +8,22 @@ Created on Fri Nov  6 14:09:48 2020
 
 
 import numpy as np
-import scipy.ndimage
 
-d3_array = np.array([[[0, 1],[2, 3]],[[4, 5],[6, 7]]])
-
+# Removes the average background of the image
 def removeaverage(array):
-
+    # Takes the average of the values in all the layers
     average = np.sum(array,axis = 0)/(array.shape[0])
     
     result = []
     
+    # Removes the average of all the layers and stacks the new layers on top of each other
     for i in range(array.shape[0]):
         new = array[i,:,:]-average
         result.append(new)
     result = np.array(np.stack(result))
     return result
-    
+
+# Gaussian blurrs the image
 def gaussianfilter(array, sigma):
     
     blurred = scipy.ndimage.gaussian_filter(array, sigma)
