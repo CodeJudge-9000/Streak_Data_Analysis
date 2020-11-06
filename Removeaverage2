@@ -8,9 +8,9 @@ Created on Fri Nov  6 14:09:48 2020
 
 
 import numpy as np
-import scipy
+import scipy.ndimage
 
-#d3_array = np.array([[[0, 1],[2, 3]],[[4, 5],[6, 7]]])
+d3_array = np.array([[[0, 1],[2, 3]],[[4, 5],[6, 7]]])
 
 def removeaverage(array):
 
@@ -23,8 +23,12 @@ def removeaverage(array):
         result.append(new)
     result = np.array(np.stack(result))
     return result
-
-#print(removeaverage(d3_array))
+    
+def gaussianfilter(array, sigma):
+    
+    blurred = scipy.ndimage.gaussian_filter(array, sigma)
+    
+    return blurred
 
 
 
