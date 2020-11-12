@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Nov  6 16:27:28 2020
-
-@author: Johanna
-"""
-
-
-# -*- coding: utf-8 -*-
 
 from IPython import get_ipython
 get_ipython().magic('reset -sf')
@@ -94,6 +86,7 @@ def removeaverage(array):
 
     return result
 
+
 # Gaussian blurs the image
 def gaussianfilter(array, sigma):
     
@@ -102,11 +95,43 @@ def gaussianfilter(array, sigma):
     return blurred
 
 
+def slideShow(Movie_stack):
+    # Original code by Murat Nulati Yesibolati and Anders Brostrøm
+    
+    # Modified by Johannes Koblitz Aaen
+    
+    # This function takes in a 3D array, and plots it as a 'slideshow', where it's possible to update the shown frame
+    # The input called Movie_stack is the required 3D array
+    # Beware that the slideshow sometimes freezes
+    
+    #Axes and stuff is defined, together with the slider and the shown image
+    fig1, ax = plt.subplots()
+    plt.subplots_adjust(bottom=0.20)
+    test = ax.imshow(Movie_stack[0],cmap="gray")
+    ax_slider = plt.axes([0.1, 0.1, 0.80, 0.04], facecolor="red")
+    
+    #Defines slider value
+    Slider_val = Slider(ax_slider, 'Frame', 1, Movie_stack.shape[0], valinit=10, valstep=1)
+    
+    def update(val):
+        #Updates the shown frame, accordingly
+        frame_val = int(Slider_val.val)-1
+        test.set_data(Movie_stack[frame_val])
+        plt.draw()
+        
+        #Uncomment print statement if desired
+        #print(frame_val)
+    
+    #If the slider value changes, call function above
+    Slider_val.on_changed(update)
 
+greyedVid=loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,101,200)
+noAvg=removeaverage(greyedVid)
+gaussBlurr=gaussianfilter(noAvg,3)
 
 #print(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20)).shape)
 
-plt.imshow(np.asarray(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[:,:,0]),cmap='gray')
+#plt.imshow(np.asarray(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[:,:,0]),cmap='gray')
 #plt.imshow(np.asarray(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[:,:,0])
 #print(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20)[0,:,:]-removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[0,:,:])
 
