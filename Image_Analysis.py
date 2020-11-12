@@ -110,16 +110,16 @@ def slideShow(Movie_stack):
     #Axes and stuff is defined, together with the slider and the shown image
     fig1, ax = plt.subplots()
     plt.subplots_adjust(bottom=0.20)
-    test = ax.imshow(Movie_stack[0],cmap="gray")
+    test = ax.imshow(Movie_stack[:,:,0],cmap="gray")
     ax_slider = plt.axes([0.1, 0.1, 0.80, 0.04], facecolor="red")
     
     #Defines slider value
-    Slider_val = Slider(ax_slider, 'Frame', 1, Movie_stack.shape[0], valinit=10, valstep=1)
+    Slider_val = Slider(ax_slider, 'Frame', 1, Movie_stack.shape[2], valinit=10, valstep=1)
     
     def update(val):
         #Updates the shown frame, accordingly
         frame_val = int(Slider_val.val)-1
-        test.set_data(Movie_stack[frame_val])
+        test.set_data(Movie_stack[:,:,frame_val])
         plt.draw()
         
         #Uncomment print statement to print current frame if desired
