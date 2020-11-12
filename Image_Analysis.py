@@ -108,7 +108,6 @@ def slideShow(Movie_stack):
     global Slider_val
     
     #Axes and stuff is defined, together with the slider and the shown image
-    Movie_stack=greyedVid
     fig1, ax = plt.subplots()
     plt.subplots_adjust(bottom=0.20)
     test = ax.imshow(Movie_stack[0],cmap="gray")
