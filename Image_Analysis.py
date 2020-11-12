@@ -102,9 +102,13 @@ def slideShow(Movie_stack):
     
     # This function takes in a 3D array, and plots it as a 'slideshow', where it's possible to update the shown frame
     # The input called Movie_stack is the required 3D array
-    # Beware that the slideshow sometimes freezes
+    # Beware that the slideshow may freeze
+    
+    # The Slider_val used later is defined as a global variable, to prevent freezing
+    global Slider_val
     
     #Axes and stuff is defined, together with the slider and the shown image
+    Movie_stack=greyedVid
     fig1, ax = plt.subplots()
     plt.subplots_adjust(bottom=0.20)
     test = ax.imshow(Movie_stack[0],cmap="gray")
@@ -119,7 +123,7 @@ def slideShow(Movie_stack):
         test.set_data(Movie_stack[frame_val])
         plt.draw()
         
-        #Uncomment print statement if desired
+        #Uncomment print statement to print current frame if desired
         #print(frame_val)
     
     #If the slider value changes, call function above
