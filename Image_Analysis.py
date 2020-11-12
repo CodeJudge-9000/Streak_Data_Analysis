@@ -1,9 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  6 16:27:28 2020
+
+@author: Johanna
+"""
+
+
 # -*- coding: utf-8 -*-
 
 from IPython import get_ipython
 get_ipython().magic('reset -sf')
 
 import numpy as np
+import scipy.ndimage
 import matplotlib.pyplot as plt
 #import scipy
 #import cv2
@@ -55,7 +65,7 @@ def loadDataAsGrey(fileName,allFrames,firstFrame,lastFrame):
         
         #Visualise if needed
         #plt.imshow(videodata[i,:,:])
-        plt.imshow(greyscale_image,cmap='gray')
+        #plt.imshow(greyscale_image,cmap='gray')
         
         #Add greyscale frame to array
         greyarray=np.dstack((greyarray,greyscale_image))    
@@ -69,16 +79,19 @@ def loadDataAsGrey(fileName,allFrames,firstFrame,lastFrame):
 def removeaverage(array):
     # Removes the average background of the image
     
-    # Takes the average of the values in all the layers
-    average = np.sum(array,axis = 0)/(array.shape[0])
-    
-    result = []
-    
+    #Calculates average 2D array of 3D array
+    average=np.mean(array,axis=2)
+
     # Removes the average of all the layers and stacks the new layers on top of each other
-    for i in range(array.shape[0]):
-        new = array[i,:,:]-average
+    result = []
+    for i in range(array.shape[2]):
+        new = array[:,:,i]-average
         result.append(new)
-    result = np.array(np.stack(result))
+    result = np.array(np.dstack(result))
+    
+    # Removes values under 0
+    result[result<0]=0
+
     return result
 
 # Gaussian blurs the image
@@ -90,5 +103,12 @@ def gaussianfilter(array, sigma):
 
 
 
-print(loadDataAsGrey("0DC_-_AC_50_Hz_0.7V_WE3_CERE24.avi",0,1,20).shape)
 
+#print(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20)).shape)
+
+plt.imshow(np.asarray(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[:,:,0]),cmap='gray')
+#plt.imshow(np.asarray(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[:,:,0])
+#print(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20)[0,:,:]-removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[0,:,:])
+
+#print(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20)[0,:,:])
+#print(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[0,:,:])
