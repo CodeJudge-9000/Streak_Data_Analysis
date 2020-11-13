@@ -94,6 +94,26 @@ def gaussianfilter(array, sigma):
     
     return blurred
 
+import skimage.color
+import skimage.filters
+import skimage.io
+import skimage.viewer
+
+#Puts threshhold on the image 
+def threshhold(array):
+    
+    #Finds the adaptive threshhold
+    t=skimage.filters.threshold_otsu(x)
+    
+    #Binary threshhold
+    mask = x > t
+    
+    #Applies the threshhold
+    sel = np.zeros_like(x)
+    sel[mask] = x[mask]
+    
+    return sel
+
 
 def slideShow(Movie_stack):
     # Original code by Murat Nulati Yesibolati and Anders Brostrøm
