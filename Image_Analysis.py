@@ -103,14 +103,14 @@ import skimage.viewer
 def threshhold(array):
     
     #Finds the adaptive threshhold
-    t=skimage.filters.threshold_otsu(x)
+    t=skimage.filters.threshold_otsu(array)
     
     #Binary threshhold
-    mask = x > t
+    mask = array > t
     
     #Applies the threshhold
-    sel = np.zeros_like(x)
-    sel[mask] = x[mask]
+    sel = np.zeros_like(array)
+    sel[mask] = array[mask]
     
     return sel
 
