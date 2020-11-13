@@ -114,6 +114,8 @@ def threshhold(array):
     
     return sel
 
+# import required for slideShow function
+from matplotlib.widgets import Slider
 
 def slideShow(Movie_stack):
     # Original code by Murat Nulati Yesibolati and Anders Brostrøm
