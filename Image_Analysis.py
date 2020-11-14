@@ -101,6 +101,7 @@ import skimage.viewer
 
 #Puts threshhold on the image 
 def threshhold(array):
+    # Function by Johanna Neumann Sørensen
     
     #Finds the adaptive threshhold
     t=skimage.filters.threshold_otsu(array)
@@ -162,3 +163,36 @@ gaussBlurr=gaussianfilter(noAvg,3)
 
 #print(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20)[0,:,:])
 #print(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,1,20))[0,:,:])
+
+import math as m
+
+def rotate(video,x1,y1,x2,y2,orientation):
+    # Function by Johanna Neumann Sørensen
+    # This function can rotate an video so that a tilted line in the video becomes vertical or horizontal
+    # The input requires two sets of coordinates that the tilted line passes through
+    
+    # Slope of the tilted line
+    a = (y1-y2)/(x2-x1)
+    # Rotation angles depending on the desired orientation
+    angleh = -m.degrees(m.atan(a))
+    anglev = angleh - 90
+    
+    # While-loop to aske user for the correct orientation input
+    while True:
+        try:
+            orientation = str(input("Please choose either a vertical or horizontal orientation:"))
+        except ValueError:
+            print("Sorry, I didn't understand that.")
+            continue
+        if orientation != 'horizontal' and orientation != 'vertical':
+            print("Sorry, orientation must either be horizontal or vertical.")
+        else:
+            break
+    
+    # Rotates the video
+    if orientation == 'horizontal':
+        rotatedvideo = scipy.ndimage.rotate(video,angleh)
+        return rotatedvideo
+    if orientation == 'vertical':
+        rotatedvideo = scipy.ndimage.rotate(video,anglev)
+        return rotatedvideo
