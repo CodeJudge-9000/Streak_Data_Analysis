@@ -196,3 +196,14 @@ def rotate(video,x1,y1,x2,y2,orientation):
     if orientation == 'vertical':
         rotatedvideo = scipy.ndimage.rotate(video,anglev)
         return rotatedvideo
+    
+data=gaussianfilter(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,101,200)),1)[:,:,92]
+plt.figure()
+plt.imshow(data,cmap="gray")
+
+plt.figure()
+a = np.asarray(data,dtype=np.uint8)
+thresh=cv2.threshold(a,0.008,255,cv2.THRESH_BINARY)[1]
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+coordinates = np.array([cv2.boundingRect(i) for i in contours])
+visualiser=plt.imshow(thresh,cmap="gray")
