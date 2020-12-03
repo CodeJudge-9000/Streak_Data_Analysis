@@ -197,13 +197,79 @@ def rotate(video,x1,y1,x2,y2,orientation):
         rotatedvideo = scipy.ndimage.rotate(video,anglev)
         return rotatedvideo
     
-data=gaussianfilter(removeaverage(loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,101,200)),1)[:,:,92]
-plt.figure()
-plt.imshow(data,cmap="gray")
+def templateMatch(imageStack,template,threshold,frame):
+    
+    # An empty list, in which the streak images are stored
+    streakImages = []
+    
+    # Frame is converted to a scale starting from 0, instead of 1
+    frame = frame-1
+    
+    # workingCoords is apparently y, then x. Watch out for this.
+    workingCoords=cv2.matchTemplate(imageStack[:,:,frame].astype(np.float32),template.astype(np.float32),cv2.TM_CCOEFF_NORMED)
+    workingCoords=np.where(workingCoords >= threshold)
+    
+    # For some reason there's a displacement of the coordinates by ~10-20, which *could* be because of the template
+    # Below is a temporary™ fix, which also fixes the coordinates
+    templateW = int(round(template.shape[0]/2))
+    templateH = int(round(template.shape[1]/2))
+    workingCoords=np.array((workingCoords[1]+templateH,workingCoords[0]+templateW))
+    #workingCoords=np.array((workingCoords[1]+12,workingCoords[0]+16))
+    
+    # Create binary image of identified points
+    binaryPoints = np.zeros_like(imageStack[:,:,frame])
+    binaryPoints[workingCoords[1],workingCoords[0]]=255
+    #plt.imshow(a)
+    
+    # Use the binary contours to find center coordinates
+    contours = cv2.findContours(binaryPoints.astype(np.uint8), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_TC89_L1)[0]
+    xCent = np.array([])
+    yCent = np.array([])
+    for c in contours:
+        x,y,w,h = cv2.boundingRect(c)
+        
+        # If the height-to-width ratio if high enough, add the center value
+        if h/w >= 1.2:
+            centX = x + w/2
+            centY = y + h/2
+            xCent = np.append(xCent,centX)
+            yCent = np.append(yCent,centY)
+    
+    # Crop images, and add to list streakImages
+    xMov = int(round((template.shape[1]+8)/2))
+    yMov = int(round((template.shape[0]+8)/2))
+    
+    for i in range(len(xCent)):
+        xCenter = int(round(xCent[i]))
+        yCenter = int(round(yCent[i]))
+        if imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame].shape[0] > 0:
+            streakImages.append(imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame])
 
-plt.figure()
-a = np.asarray(data,dtype=np.uint8)
-thresh=cv2.threshold(a,0.008,255,cv2.THRESH_BINARY)[1]
-contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-coordinates = np.array([cv2.boundingRect(i) for i in contours])
-visualiser=plt.imshow(thresh,cmap="gray")
+    
+    # Shows the macthes' coordinates with red dots, and center with blue dots
+    # plt.figure()
+    # plt.imshow(imageStack[:,:,frame-1],cmap='Blues')
+    # plt.scatter(x=workingCoords[0], y=workingCoords[1], c='r', s=0.2)
+    # plt.scatter(x=xCent, y=yCent, c='b', s=0.4)
+    # plt.show()
+    
+    return streakImages
+
+greyedVid=loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,101,200)
+greyedVid=rotate(greyedVid,0,86,341,78,"h")
+noAvg=removeaverage(greyedVid)
+gaussBlurr=gaussianfilter(noAvg,1.5)
+
+gaussBlurr2=gaussianfilter(greyedVid,1.5)
+noAvg2=removeaverage(gaussBlurr2)
+
+
+exp = 3
+templateA=noAvg2[201-exp:243+exp,245-exp:262+exp,91]
+templateG=gaussBlurr2[201-exp:243+exp,245-exp:262+exp,91]
+
+gaussBlurr2=gaussianfilter(greyedVid[104:319,143:323,:],1.5)
+noAvg2=removeaverage(gaussBlurr2)
+
+
+
