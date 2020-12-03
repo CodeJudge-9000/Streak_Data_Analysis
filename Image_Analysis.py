@@ -8,11 +8,12 @@ import numpy as np
 import scipy.ndimage
 import matplotlib.pyplot as plt
 #import scipy
-#import cv2
+import cv2
 #from PIL import image
 import skvideo.io
 import os
 import gc
+import math as m
 
 #Change working directory
 abspath = os.path.abspath(__file__)
