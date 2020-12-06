@@ -272,5 +272,30 @@ templateG=gaussBlurr2[201-exp:243+exp,245-exp:262+exp,91]
 gaussBlurr2=gaussianfilter(greyedVid[104:319,143:323,:],1.5)
 noAvg2=removeaverage(gaussBlurr2)
 
+def viewStreaks(list1,columns):
+    # Function by Johanna Neumann Sørensen
+    # This function takes a list of arrays (images) and displays them as one image
+    # The input requires a list of arrays and a number of wanted columns
+    
+    # Empty figure with size
+    fig=plt.figure(figsize=(8, 8))
+    # Number of columns and rows in the final figure
+    columns = 4
+    rows = math.ceil(len(list1)/columns)
+    
+    # Loop that adds each image to the final figure and displays it
+    for k in range(1,len(list1)+1):
+        fig.add_subplot(rows, columns, k)
+        plt.imshow(list1[k-1])
+        plt.show()
 
+# The following creates a list of random arrays (with the same size as the streak images) to test the function
+liste=[]
+w=32
+h=56
+    
+for j in range(7):
+   img = np.random.randint(10, size=(h,w))
+   liste.append(img)
 
+viewStreaks(liste,4)
