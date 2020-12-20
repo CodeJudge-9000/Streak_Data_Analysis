@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# BEWARE ALL YE WHO ENTER
+# This program stores all data in ram, meaning that if you're analysing a lot of data, you need a lot of ram
+
+# Resets all variables
 from IPython import get_ipython
 get_ipython().magic('reset -sf')
 
@@ -244,7 +248,7 @@ def templateMatch(imageStack,template,threshold):
     return streakImages
 
 
-def streakLength(streakImages):
+def streakLength(streakImages,pixelsize):
     # Function by Johannes Koblitz Aaen
     # note: Only basic functionality has been implemented for this function. To reduce errors, either implements addional checks or process the data afterwards.
     #       use plt.plot(streakLength(streakImages)[0]) to visualise output of lengths
@@ -257,6 +261,8 @@ def streakLength(streakImages):
     
     # Additionally, the profiles of the streaks are also given as a third element in a list of np arrays
     # This is purely for visualisation, but can also be used for other purposes
+    
+    # Remember: Specifically for the 50X lens, each pixel had a size of 132 nm.
     
     # Find approximate middle of image
     imWidth = streakImages[0].shape[1]
@@ -322,8 +328,14 @@ def streakLength(streakImages):
     #streakSort = streakLen
     streakSort = list(compress(streakLen,removedImgs))
     
-    # For the 50X lens, each pixel had a size of 132 nm. Change this if a different lens is used.
-    streakSort = streakSort*132
+    # Convert list by multiplying each element with the pixelsize
+    # I really should had used numpy for this
+    # Hindsight is 20/20
+    for i in range(len(streakSort)):
+        streakSort[i] = streakSort[i]*pixelSize
+        
+    # Clear unused memory
+    gc.collect()
     
     return streakSort,removedImgs,meanStrips
 
@@ -412,7 +424,9 @@ gaussBlurr2=gaussianfilter(greyedVid[104:319,143:323,:],1.5)
 noAvg2=removeaverage(gaussBlurr2)
 
 Frames=templateMatch(noAvg2,templateG,0.7)
-streakLengths=streakLength(Frames)
+streakLengths=streakLength(Frames,132)
+lenmean=stat.mean(streakLengths[0])
+lenStd=stat.pstdev(streakLengths[0])
         
 acceptedStreaks(liste,test,4)
 declinedStreaks(liste,test,4)
