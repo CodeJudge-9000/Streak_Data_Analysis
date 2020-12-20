@@ -248,7 +248,7 @@ def templateMatch(imageStack,template,threshold):
     return streakImages
 
 
-def streakLength(streakImages,pixelsize):
+def streakLength(streakImages,pixelSize):
     # Function by Johannes Koblitz Aaen
     # note: Only basic functionality has been implemented for this function. To reduce errors, either implements addional checks or process the data afterwards.
     #       use plt.plot(streakLength(streakImages)[0]) to visualise output of lengths
