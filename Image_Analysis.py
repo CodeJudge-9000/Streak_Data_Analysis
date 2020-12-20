@@ -248,6 +248,8 @@ def streakLength(streakImages):
     # Function by Johannes Koblitz Aaen
     # note: Only basic functionality has been implemented for this function. To reduce errors, either implements addional checks or process the data afterwards.
     #       use plt.plot(streakLength(streakImages)[0]) to visualise output of lengths
+    # note2: The obvious false positives will now be removed from the output, though function could always be improved
+    #        At this point one's time is better used in processing the output.
     
     # Takes a list of images in the same size, and determines the streak length
     # Output is a tuple where first element is an array of lengths, and second is a list of bools used for sorting purposes
@@ -260,47 +262,38 @@ def streakLength(streakImages):
     imWidth = streakImages[0].shape[1]
     midPoint = int(round(imWidth/2))
     
-    # Define value used for width of cutout, two empty lists and an array
+    # Define value used for width of cutout, three empty lists and an array
     cutVal = 5
     meanStrips = []
     streakLen = np.array([])
     removedImgs = []
+    cutOuts = []
     
-    # This is a secret list we'll use later - remove later if not in use
-    #means = []
+    # Create a list of cutouts to be used in analysis
+    for elem in streakImages:
+        cutOut = elem[:,midPoint-cutVal:midPoint+cutVal]
+        cutOuts.append(cutOut)
     
     # Take a cutout of each image from middle of image to a set value, then find the mean on second axis
-    for elem in streakImages:   
-        
-        # Cutout
-        cutOut = elem[:,midPoint-cutVal:midPoint+cutVal]
+    for elem in cutOuts:
         
         # Mean of cutout along second axis is found, and added to a list
-        meanAxis = np.mean(cutOut,axis=1)
+        meanAxis = np.mean(elem,axis=1)
         
         # Normalize for ease of analysis, and add to list
         # meanStrips isn't used in the code, but can be output if a visualisation is needed
         meanAxis = meanAxis/np.max(meanAxis)
         meanStrips.append(meanAxis)
         
-        # Now that we're at it, why not calculate the average of the strip too?
-        #meanVal = np.mean(cutOut)# - remove later if not in use
-        
-        # And why not add those to a list?
-        #means.append(meanVal)# - remove later if not in use
-        
         # Find the peaks of the strip, and add to list
         peakvar = scipy.signal.find_peaks(meanAxis,height=np.max(meanAxis)*0.5,prominence=np.max(meanAxis)*0.1)
         
-        # Scaffolding. Remove later.
-        #print(type(peakvar))
-        #print('peaks: ',peakvar[0])
-        #print(len(peakvar[0]))
         
         # Now for some sorting
         # If there's less than one peak, do not add it, and go to next value
         if len(peakvar[0])<2:
             removedImgs.append(False)
+            streakLen = np.append(streakLen,0)
             continue
         else:
             removedImgs.append(True)
@@ -310,15 +303,29 @@ def streakLength(streakImages):
         streakLen = np.append(streakLen,lenvar)
         
     
+    # Due to the image analysis method there are going to be outliers
+    # These outliers are known false positives, and can therefore be removed
+    # This is done using the std Dev
+    
+    # Create array without zero values
+    noZeros = list(compress(streakLen,removedImgs))
+    
+    # Calculate mean and std of streaklengths
+    lenMean = stat.mean(noZeros)
+    stdDev = stat.pstdev(noZeros)
+    
+    # Sort based on mean and stdDev
+    for i in range(len(streakLen)):
+        if (abs(streakLen[i]-lenMean)>2*stdDev):
+            removedImgs[i] = False
+    
+    #streakSort = streakLen
+    streakSort = list(compress(streakLen,removedImgs))
+    
     # For the 50X lens, each pixel had a size of 132 nm. Change this if a different lens is used.
-    streakLen*132
+    streakSort = streakSort*132
     
-    # More scaffolding
-    #print('streakLen: ',streakLen*132)
-    #print('means: ',means)
-    
-    return streakLen,removedImgs,meanStrips
-
+    return streakSort,removedImgs,meanStrips
 
 def viewStreaks(list1,columns):
     # Function by Johanna Neumann Sørensen
