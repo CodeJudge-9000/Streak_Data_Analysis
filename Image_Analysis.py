@@ -269,7 +269,7 @@ def streakLength(streakImages,pixelSize):
     midPoint = int(round(imWidth/2))
     
     # Define value used for width of cutout, three empty lists and an array
-    cutVal = 5
+    cutVal = int(round(imWidth/6))
     meanStrips = []
     streakLen = np.array([])
     removedImgs = []
