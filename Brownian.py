@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Dec 30 01:24:40 2020
-
-@author: johan
-"""
 
 ## Trajectory plot of Brownian motion by Johanna
-
-import os
-import csv
-import matplotlib.pyplot as plt
 
 # Changes working directory
 os.chdir('/Users/Johanna/OneDrive - Danmarks Tekniske Universitet/DTU/3. Semester/Fagprojekt/Data 27112020/Brownian motion_after60min')
@@ -76,4 +67,3 @@ for k in range(0, len(indices)-1):
         plt.xlabel('x [\u03BCm]')
         plt.ylabel('y [\u03BCm]')
         plt.show()
-
