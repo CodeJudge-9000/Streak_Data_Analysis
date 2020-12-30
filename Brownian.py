@@ -67,3 +67,95 @@ for k in range(0, len(indices)-1):
         plt.xlabel('x [\u03BCm]')
         plt.ylabel('y [\u03BCm]')
         plt.show()
+   
+
+##########################################################################################################################################
+# Gaussion Displacement Distribution
+# Both plots dont work at the same time in the same script, one has to be commented
+
+ # Empty lists for the distances between points
+dtotal = []
+dlist = []
+
+# Generating a list of empty lists for calculating the total distances
+num_lists = len(indices)-1
+lists1 = [[] for i in range(num_lists)]
+
+# Loop that calculates distances for each trajectory 
+for k in range(0, len(indices)-1):
+    x2 = new_x[indices[k]+1:indices[k+1]+1]
+    x3 = [x * 0.132 for x in x2]
+    
+    y2 = new_y[indices[k]+1:indices[k+1]+1]
+    y3 = [y * 0.132 for y in y2]
+    #print(x2)
+    #print(y2)
+    
+    for i in range(0, len(x3)-1):
+        d = math.sqrt((x3[i+1]-x3[i])**2+(y3[i+1]-y3[1])**2)
+        lists1[k].append(d)
+
+# Loop that calculates the total distance traveled for each trajectory
+for h in range(0, len(lists1)):
+    total = sum(lists1[h])
+    dtotal.append(total)
+
+# Total average distance travelled 
+totalaverage = sum(dtotal)/N
+    
+
+lists2x = [[] for i in range(num_lists)]
+lists2y = [[] for i in range(num_lists)]
+    
+# Loop that calculates displacement in x and y direction for each trajectory 
+for k in range(0, len(indices)-1):
+    x2 = new_x[indices[k]+1:indices[k+1]+1]
+    x3 = [x * 0.132 for x in x2]
+    
+    y2 = new_y[indices[k]+1:indices[k+1]+1]
+    y3 = [y * 0.132 for y in y2]
+    #print(x2)
+    #print(y2)
+    
+    for i in range(0, len(x3)-1):
+        dispx = x3[i+1]-x3[i]
+        dispy = y3[i+1]-y3[i]
+        
+        lists2x[k].append(dispx)
+        lists2y[k].append(dispy)
+        
+alldispx = []
+alldispy = []
+
+# Loop that adds all x displacements from the different trajectories to list
+for g in range(len(lists2x)):
+    for r in range(len(lists2x[g])):
+        alldispx.append(lists2x[g][r])
+
+# Loop that adds all y displacements from the different trajectories to list
+for g in range(len(lists2y)):
+    for r in range(len(lists2y[g])):
+        alldispy.append(lists2y[g][r])
+        
+totaldisp = [alldispx,alldispy]
+
+# Plot of displacement distribution
+kwargs = dict(hist_kws={'alpha':.5}, kde_kws={'linewidth':3})
+
+#Figure size
+plt.figure(figsize=(10,7), dpi= 85)
+
+sns.distplot(alldispx, color="dodgerblue",label="\u0394 x" ,**kwargs)
+sns.distplot(alldispy, color="deeppink",label="\u0394 y", **kwargs)
+
+plt.xlim(-2.5,3)
+
+plt.xlabel('[\u03BCm]', fontsize=18)
+plt.ylabel('Count', fontsize=18)
+
+plt.xticks(fontsize=18)
+plt.yticks(fontsize=18)
+
+plt.title("Distribution of AuNP displacement", fontsize=18)
+
+plt.legend(fontsize=18);
