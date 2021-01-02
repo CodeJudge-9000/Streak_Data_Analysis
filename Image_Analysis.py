@@ -36,7 +36,7 @@ def loadDataAsGrey(fileName,allFrames,firstFrame,lastFrame):
     
     # This function loads a RGB video file and converts it to a greyscale image without weighting
     # fileName is the name of the video file in the same folder as the script
-    # If allFrames!=0 then the funciton uses all frames the file
+    # If allFrames!=False then the funciton uses all frames from the file
     # firstFrame defines the first frame in the desired interval, while lastFrame defines the last
     
     # Load data
@@ -56,7 +56,7 @@ def loadDataAsGrey(fileName,allFrames,firstFrame,lastFrame):
         raise Exception("Your defined frames must be higher than 0. Your firstFrame was {} and lastFrame was {}.".format(firstFrame,lastFrame))
     if firstFrame>vShape[0] or lastFrame>vShape[0]:
         raise Exception("Your defined frames must not be higher than {}. Your firstFrame was {} and lastFrame was {}.".format((vShape[0]),firstFrame,lastFrame))
-    if allFrames==0:
+    if allFrames==False:
         imrange=range(firstFrame-1,lastFrame)
     else:
         imrange=range(vShape[0])
@@ -102,9 +102,9 @@ def gaussianfilter(array, sigma):
     return blurred
 
 
-def threshhold(array):
+def threshold(array):
     # Function by Johanna Neumann Sørensen
-    # Puts adaptive threshhold on the image 
+    # Puts adaptive threshold on the image 
     
     #Finds the adaptive threshhold
     t=skimage.filters.threshold_otsu(array)
@@ -411,25 +411,30 @@ def declinedStreaks(list1,boolean,columns):
 # Actual Image Processing
 # Just type in whatever you need underneath
 
-greyedVid=loadDataAsGrey("0DC- AC 50 Hz 0.7V WE3 CERE24.avi",0,101,300)
-greyedVid=rotate(greyedVid,0,86,341,78,"h")
+# Example of data processing, using the example file:
+# Load data
+greyedVid = loadDataAsGrey("60 Hz 15 fps 0.8 V_Exp1.avi",False,60,410)
+
+# Rotate and image process
+greyedVid = rotate(greyedVid, 45, 22, 455, 14, 'h')
 noAvg=removeaverage(greyedVid)
-gaussBlurr=gaussianfilter(noAvg,1.5)
+gaussBlurr=gaussianfilter(noAvg,1.0)
 
-gaussBlurr2=gaussianfilter(greyedVid,1.5)
-noAvg2=removeaverage(gaussBlurr2)
+# Find a suitable template by using slideShow. Remember that frames in slideShow count from 1, while python generally counts from 0
+#slideShow(gaussBlurr, 'gray')
+tempG = gaussBlurr[38:64,174:189,209]
 
-exp = 3
-templateA=noAvg2[201-exp:243+exp,245-exp:262+exp,91]
-templateG=gaussBlurr2[201-exp:243+exp,245-exp:262+exp,91]
+# Use template to get matches
+Frames = templateMatch(gaussBlurr, tempG, 0.75)
 
-gaussBlurr2=gaussianfilter(greyedVid[104:319,143:323,:],1.5)
-noAvg2=removeaverage(gaussBlurr2)
-
-Frames=templateMatch(noAvg2,templateG,0.7)
+# Use matches to find length of streaks
 streakLengths=streakLength(Frames,132)
+
+# Beregning af gennemsnitslig længde og standardafvigelse
 lenmean=stat.mean(streakLengths[0])
 lenStd=stat.pstdev(streakLengths[0])
-        
-#acceptedStreaks(liste,test,4)
-#declinedStreaks(liste,test,4)
+
+# Print statements for automatisering
+print('\n How many matches: ',len(Frames))
+print('lengthMean: ',lenmean)
+print('lengthStd: {} \n'.format(lenStd))
