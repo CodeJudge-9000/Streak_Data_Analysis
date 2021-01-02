@@ -22,6 +22,7 @@ import os
 import gc
 import math as m
 import statistics as stat
+import sys
 from itertools import compress
 
 
@@ -250,10 +251,6 @@ def templateMatch(imageStack,template,threshold):
 
 def streakLength(streakImages,pixelSize):
     # Function by Johannes Koblitz Aaen
-    # note: Only basic functionality has been implemented for this function. To reduce errors, either implements addional checks or process the data afterwards.
-    #       use plt.plot(streakLength(streakImages)[0]) to visualise output of lengths
-    # note2: The obvious false positives will now be removed from the output, though function could always be improved
-    #        At this point one's time is better used in processing the output.
     
     # Takes a list of images in the same size, and determines the streak length
     # Output is a tuple where first element is an array of lengths, and second is a list of bools used for sorting purposes
@@ -263,6 +260,10 @@ def streakLength(streakImages,pixelSize):
     # This is purely for visualisation, but can also be used for other purposes
     
     # Remember: Specifically for the 50X lens, each pixel had a size of 132 nm.
+    
+    # Make a check whether there are any matches at all
+    if len(streakImages)==0:
+        sys.exit("Something went wrong. streakLength received an empty list. Please check your template for templateMatch using plt.imshow().")
     
     # Find approximate middle of image
     imWidth = streakImages[0].shape[1]
