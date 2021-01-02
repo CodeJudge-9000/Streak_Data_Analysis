@@ -16,6 +16,7 @@ statistics - MAY REQUIRE DOWNLOAD
 This code is meant to analyse the length of streaks of nanoparticles in a microchannel. To obtain proper results, ensure that:
 	1. Your video is as high a resolution as possible
 	2. All streaks are oriented along one axis (video can be rotated by the code)
+	3. You have at least 8 GB ram, as data is stored there temporarily
 
 The functions are:
 	loadDataAsGrey(fileName, allFrames, firstFrame, lastFrame)
@@ -39,7 +40,26 @@ Step 4: Using your template, find all matches using templateMatch. Then find all
 Step 5: Use the list of streak lengths to calculate the standard deviation and mean length of streak lengths.
 
 
-Additional tips for each function can be found below, and an example of the above method can be found at the bottom of the code. Do be aware that while some functions start counting frames from 1, python (and normal programming languages) generally counts from 0.
+Additional tips for each step can be found below, and an example of the above method can be found at the bottom of the code. Do be aware that while some functions start counting frames from 1, python (and normal programming languages) generally counts from 0.
+
+############# LOADING DATA IN GREYSCALE #############
+When loading your data, ensure that the file you're working on is in the same folder as the script, as the working directory is changed to its current directory. This can be changed manually in the beginning of the code. Also, remember the file extension when loading your video.
+
+Set allFrames to True (or anything the isn't False for that matter) if you don't want to bother with not loading all frames. The frames can in this case just be set to 1 and 2.
+
+############# PROCESSING YOUR IMAGE #############
+When processing your image you can either decide to remove the background using removeaverage, and then blurr to improve result, or the other way around. Or you can entirely forego the blurring or background removal. The best tip here is that the image processing is very dependant upon your video file, and there really isn't an universal answer to 'How should i do this?'.
+
+When using gaussianfilter, a sigma of 0.5 is a weak blurr, a sigma of approx. 1.0 is a decent amount of blurring and everything above 2.0-3.0 is a very aggresive blurring. Usually a sigma of 1.0 or 1.5 is fine. Sometimes less of your video resolution is high. Just remember that the blurring is to compensate for a limited video resolution.
+
+Use slideShow to see if your processing works for your given video. If slideShow doesn't work, then you likely need to change backline to 'Automatic' under Tools->Preferences->IPython Console->Graphics.
+
+############# FINDING THE ONE #############
+When trying to find a template, use the slideShow function with your cmap of choice ('gray' is a classic) and begin looking through your frames. When you've found something that looks promising, remember to use the zoom function to ensure it is properly well defined.
+
+Now, you've got to figure out which x you start at and end at. The same with y. Also, remember to subtract one from your chosen frame, as python counts from 0. After you've identified these sizes, you can simply extract the image from your 3D-array. See the example at the bottom of the script, if need be.
+
+For reference, the method used in template matching is TM_CCOEFF_NORMED.
 
 ############# TEMPLATE MATCHING #############
 The template should ideally not go beyond 1/6 of the width of the frame, from the center axis.
@@ -50,4 +70,8 @@ This is due to the streakLength function expecting the streak to:
 
 An example of such a template is included.
 
+Aditionally, when using templateMatch, a good threshold for matching lies in or around the 0.7-0.8 range. This of course depends upon the quality of your template.
+
+############# CALCULATING THE MEAN AND STANDARD DEVIATION #############
+To calculate the mean, use stat.mean() and to calculate the std dev use stat.pstdev() in the first output from the streakLength function. In other words streakLength()[0].
 
