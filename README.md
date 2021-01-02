@@ -41,7 +41,7 @@ Step 4: Using your template, find all matches using templateMatch. Then find all
 Step 5: Use the list of streak lengths to calculate the standard deviation and mean length of streak lengths.
 
 
-Additional tips for each step can be found below, and an example of the above method can be found at the bottom of the code. Do be aware that while some functions start counting frames from 1, python (and normal programming languages) generally counts from 0.
+Additional tips for each step can be found below, and an example of the above method can be found at the bottom of the code. Do be aware that while some functions start counting frames from 1, python (and normal programming languages) generally count from 0.
 
 ############# LOADING DATA IN GREYSCALE #############
 When loading your data, ensure that the file you're working on is in the same folder as the script, as the working directory is changed to its current directory. This can be changed manually in the beginning of the code. Also, remember the file extension when loading your video.
