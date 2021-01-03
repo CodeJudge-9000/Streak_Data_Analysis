@@ -13,6 +13,8 @@ opencv / cv2 - DOWNLOAD REQUIRED
 skimage / scikit-image - DOWNLOAD REQUIRED
 statistics - MAY REQUIRE DOWNLOAD
 
+If using anaconda, use the anaconda prompt to download libraries.
+
 ############# USING THE CODE #############
 This code is meant to analyse the length of streaks of nanoparticles in a microchannel. To obtain proper results, ensure that:
 	1. Your video is as high a resolution as possible
