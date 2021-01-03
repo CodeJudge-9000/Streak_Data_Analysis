@@ -233,13 +233,14 @@ def templateMatch(imageStack,template,threshold):
             xCenter = int(round(xCent[i]))
             yCenter = int(round(yCent[i]))
             
-            # Add cutout to output of condition is true
-            if imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame].shape[0] > 0:
-                streakImages.append(imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame])
-    
+            # Add cutout to output if conditions are true
+            if imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame].shape[0] == 2*yMov:
+                if imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame].shape[1] == 2*xMov:
+                    if imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame].shape[0] > 0:
+                        streakImages.append(imageStack[yCenter-yMov:yCenter+yMov,xCenter-xMov:xCenter+xMov,frame])
         
         # Shows the macthes' coordinates with red dots, and center with blue dots
-        # May not be a great idea to uncomment without removing the loop, and defining 'frame'
+        # May not be a great idea to uncomment without removing the loop, and defining 'frame', but great for visualisation
         # plt.figure()
         # plt.imshow(imageStack[:,:,frame-1],cmap='Blues')
         # plt.scatter(x=workingCoords[0], y=workingCoords[1], c='r', s=0.2)
@@ -270,7 +271,10 @@ def streakLength(streakImages,pixelSize):
     midPoint = int(round(imWidth/2))
     
     # Define value used for width of cutout, three empty lists and an array
-    cutVal = int(round(imWidth/6))
+    if int(round(imWidth/6))!=0:
+        cutVal = int(round(imWidth/6))
+    else:
+        cutVal = 1
     meanStrips = []
     streakLen = np.array([])
     removedImgs = []
@@ -294,7 +298,6 @@ def streakLength(streakImages,pixelSize):
         
         # Find the peaks of the strip, and add to list
         peakvar = scipy.signal.find_peaks(meanAxis,height=np.max(meanAxis)*0.5,prominence=np.max(meanAxis)*0.1)
-        
         
         # Now for some sorting
         # If there's less than one peak, do not add it, and go to next value
@@ -436,6 +439,6 @@ lenmean=stat.mean(streakLengths[0])
 lenStd=stat.pstdev(streakLengths[0])
 
 # Print statements for automatisering
-print('\n How many matches: ',len(Frames))
+print('\nHow many matches: ',len(Frames))
 print('lengthMean: ',lenmean)
 print('lengthStd: {} \n'.format(lenStd))
