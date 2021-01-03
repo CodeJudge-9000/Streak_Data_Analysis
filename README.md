@@ -11,7 +11,7 @@ sys
 scipy - DOWNLOAD REQUIRED
 opencv / cv2 - DOWNLOAD REQUIRED
 skimage / scikit-image - DOWNLOAD REQUIRED
-ffmpeg - DOWNLOAD REQUIRED
+ffmpeg - DOWNLOAD REQUIRED (Use "conda install -c mrinaljain17 ffmpeg" in anaconda prompt in windows)
 statistics - MAY REQUIRE DOWNLOAD
 
 If using anaconda, use the anaconda prompt to download libraries. In windows, simple use the search function. For mac, use anaconda navigator to open anaconda prompt. Some libraries take a while to download.
