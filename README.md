@@ -66,13 +66,10 @@ Now, you've got to figure out which x you start at and end at. The same with y. 
 For reference, the method used in template matching is TM_CCOEFF_NORMED.
 
 ############# TEMPLATE MATCHING #############
-The template streak should ideally not go much beyond 1/4 of the width of the frame, from the center axis.
-If the streak fills more than 1/4 of the image, from the center axis, a worse result may be obtained.
+The template streak should ideally not be less than 1/4 of the width of the frame, from the center axis.
 This is due to the streakLength function expecting the streak to:
 	1. Be centered (this is *very* important)
-	2. Only fill part of the image (specifically +-1/6 of the image width, from center, but do be aware that while the
-	   templateMatch function bases the found frames upon the template dimensions, it does add a bit of space around matched
-	   streaks so just follow the template)
+	2. Fill a decent part of the image (Do be aware that the template matching function ignores everything too close to the edge of the image - about 8 pixels)
 
 An example of such a template is included.
 
