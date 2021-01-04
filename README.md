@@ -73,7 +73,7 @@ This is due to the streakLength function expecting the streak to:
 
 An example of such a template is included.
 
-Aditionally, when using templateMatch, a good threshold for matching lies in or around the 0.7-0.8 range. This of course depends upon the quality of your template.
+Aditionally, when using templateMatch, a good threshold for matching lies in or around the 0.7-0.8 range. This of course depends upon the quality of your template, and I've personally had to use 0.65 before, to get a good amount of data.
 
 ############# CALCULATING THE MEAN AND STANDARD DEVIATION #############
 To calculate the mean, use stat.mean() and to calculate the std dev use stat.pstdev() in the first output from the streakLength function. In other words streakLength()[0].
