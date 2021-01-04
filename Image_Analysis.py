@@ -440,5 +440,6 @@ lenStd=stat.pstdev(streakLengths[0])
 
 # Print statements for automatisering
 print('\nHow many matches: ',len(Frames))
+print("N: ",sum(streakLengths[1]))
 print('lengthMean: ',lenmean)
 print('lengthStd: {} \n'.format(lenStd))
